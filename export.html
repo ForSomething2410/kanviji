@@ -1,0 +1,255 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>export black</title>
+    <style>
+        body {
+          background-color: black;
+          color: white;
+          font-family: Arial, Helvetica, sans-serif, sans-serif;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+        }
+        
+        h3 {
+          color: wheat;
+          margin-bottom: 20px;
+        }
+        button {
+          width: 50%;
+          padding: 15px;
+          margin: 10px 0;
+          border: 1.5px solid grey;
+          border-radius: 8px;
+          background-color:black;
+          color: #fff;
+          transition: background 0.3s, color 0.3s;
+        }
+        input:focus, button:hover {
+          background-color: #444;
+          color: #ff5722;
+          outline: none;
+        }
+        button {
+          background-color:wheat;
+          color: black;
+        }
+        button:active {
+          background-color: wheat;
+        }
+        input[type="file"] {
+          padding: 8px;
+        }
+
+        #pop {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: black;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            z-index: 9999;
+            width: 300px;
+        }
+        #pop img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        #bar {
+            width: 100%;
+            height: 5px;
+            background: lightgray;
+            margin-top: 10px;
+            position: relative;
+        }
+        #fill {
+            width: 0%;
+            height: 100%;
+            background: green;
+            transition: width 2s linear;
+        }
+      </style>
+    
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<body>
+  <h1 id="nkn1">Export u r Data</h1>
+  
+  <button id="nkn2" onclick="show()">Download Data</button>
+  <div id="pop" style="display:none;">
+      <p id="txt">Reading Black Road...</p>
+      <img id="img" src="https://raw.githubusercontent.com/microintel/endgram/main/photo/venom-load.gif" alt="Loading">
+      <div id="bar"><div id="fill"></div></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script>
+      function gDB(db, store, keys) {
+          return new Promise((res, rej) => {
+              const r = indexedDB.open(db);
+              const data = {};
+
+              r.onsuccess = (e) => {
+                  const db = e.target.result;
+                  const tx = db.transaction(store, 'readonly');
+                  const os = tx.objectStore(store);
+
+                  keys.forEach(key => {
+                      const gr = os.get(key.trim());
+                      gr.onsuccess = (ev) => {
+                          if (ev.target.result) {
+                              data[key.trim()] = ev.target.result;
+                          }
+                      };
+                      gr.onerror = () => rej("mlm");
+                  });
+
+                  tx.oncomplete = () => res(data);
+              };
+
+              r.onerror = () => rej('Error opening database');
+          });
+      }
+
+     function dJSON(data, name) {
+        let why= JSON.stringify(data,null,2);
+        let whi= pccon(why,"e");
+          const b = new Blob([whi], { type: "text/plain" });
+          const l = document.createElement('a');
+          l.href = URL.createObjectURL(b);
+          l.download = "BlackRoadviji.txt";
+          l.click();
+      }
+
+      function exportData() {
+          const db = "blackviji";
+          const store = "sst";
+          const keys = "blackroadINC,frotuXMMXG,nkncc,user".split(',');
+
+          if (!db || !store || keys.length === 0) {
+              alert('Please fill in all fields with valid data.');
+              return;
+          }
+
+          gDB(db, store, keys)
+              .then(data => Object.keys(data).length ? dJSON(data, 'data') : alert('No data'))
+              .catch(e => alert(e));
+      }
+
+      function show() {
+
+document.getElementById("nkn1").style.display="none";
+document.getElementById("nkn2").style.display="none";
+
+          let msgs = [
+              "Reading data from Database...",
+              "Creating File...",
+              "Initiating download [ chakli ]..."
+          ];
+          let pop = document.getElementById("pop");
+          let txt = document.getElementById("txt");
+          let fill = document.getElementById("fill");
+          let idx = 0;
+          let dur = Math.floor(Math.random() * (18000 - 10000 + 1)) + 10000;
+          let intv = dur / msgs.length;
+           intv=1000;
+          pop.style.display = "block";
+
+          let int = setInterval(() => {
+              idx++;
+              if (idx < msgs.length) txt.innerText = msgs[idx];
+              fill.style.width = `${(idx + 1) * (100 / msgs.length)}%`;
+              if (idx >= msgs.length - 1) {
+                  clearInterval(int);
+                  setTimeout(() => {
+                      pop.style.display = "none";
+                      exportData();
+                      Toastify({
+                          text: "BlackRoad Data File Downloaded Successfully",
+                          duration: 3000,
+                          newWindow: true,
+                          close: false,
+                          gravity: "top",
+                          position: "center",
+                          stopOnFocus: true,
+                          style: {
+                              background: "green",
+                          },
+                      }).showToast();
+
+                      document.getElementById("nkn1").style.display="block";
+document.getElementById("nkn2").style.display="block";
+
+                  }, intv);
+              }
+          }, intv);
+      }
+      
+      
+      function rdbname(db, st, k) {
+      return new Promise((res, rej) => {
+      const req = indexedDB.open(db);
+      
+      req.onerror = () => rej('DB open error');
+      
+      req.onsuccess = () => {
+      const d = req.result;
+      const tx = d.transaction([st], 'readonly');
+      const s = tx.objectStore(st);
+      const g = s.get(k);
+      
+      g.onerror = () => rej('Get error');
+      g.onsuccess = () => res(g.result);
+      };
+      });
+      }
+      
+      let delus="";
+      rdbname('blackviji', 'sst', 'user')
+      .then((val)=> {
+      
+      delus=val["p"];
+      });
+      
+      
+      function pccon(t, y) {
+      const key = delus;
+     
+      
+      const chunkSize = 1000;
+      let result = '';
+      
+      if (y === 'e') {
+      for (let i = 0; i < t.length; i += chunkSize) {
+      const chunk = t.slice(i, i + chunkSize);
+      const encrypted = CryptoJS.AES.encrypt(chunk, key).toString();
+      result += encrypted + '|';
+      }
+      return result.slice(0, -1);
+      } else if (y === 'd') {
+      const chunks = t.split('|');
+      for (let i = 0; i < chunks.length; i++) {
+      const bytes = CryptoJS.AES.decrypt(chunks[i].trim(), key);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      if (!decrypted && decrypted !== '') throw new Error("Invalid chunk or wrong key");
+      result += decrypted;
+      }
+      return result;
+      } else {
+      throw new Error("x");
+      }
+      }
+      
+  </script>
+</body>
+</html>

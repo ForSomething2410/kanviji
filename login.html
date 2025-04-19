@@ -1,0 +1,244 @@
+
+<html>
+<head>
+  <title>Black Road Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, Helvetica, sans-serif, sans-serif;
+      margin: 0px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      width:100vw;
+      height:95vh;
+    }
+    form {
+      background-color:black;
+      padding:10px;
+      border-radius: 12px;
+      text-align: center;
+      width: 94vw;
+    }
+    h3 {
+    margin-top:10px;
+      color: skyblue;
+      margin-bottom: 10px;
+    }
+    input, button {
+      width: 90%;
+      padding: 15px;
+      margin: 10px;
+      border: 1.5px solid grey;
+      border-radius: 8px;
+      background-color:black;
+      color: #fff;
+      transition: background 0.3s, color 0.3s;
+    }
+    button {
+      background-color:white;
+      color: black;
+    }
+    button:active {
+      background-color: white;
+      color:black;
+    }
+    input[type="file"] {
+      padding: 8px;
+    }
+
+    a{
+      text-decoration: none;
+      color: purple;
+    }
+
+    fieldset {
+    border: 2px solid white;
+    padding: 10px;
+    border-radius: 10px;
+    margin:5px;
+  }
+
+  legend {
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .bt{
+  
+  width:90%;
+  background-color:black;
+  color:white;
+  border-radius:10px;
+  }
+
+
+  </style>
+</head>
+<body>
+
+  <center><h3 style="text-align: center;">Black Road Login</h3></center>
+  <form id="f">
+    <fieldset>
+      <legend> Backup Login</legend>
+    <input style="display:none" type="text" id="u" value="vignesh" placeholder="Username" required><br>
+    <input type="text" id="urlinp" placeholder="https://forsomething2410.github.io/kanviji/blackdata/BlackRoadviji.txt" value="https://forsomething2410.github.io/kanviji/blackdata/BlackRoadviji.txt" required><br>
+    <input type="password" id="p" placeholder="Password" required><br>
+   <!-- <input onchange="importData()" type="file" id="fileInput" required><br> -->
+   
+    <input type="number" id="logpin" min="0000" max="9999" placeholder="Create 4 digit pin" required>
+    <button type="submit">Login</button>
+
+    </fieldset>
+    
+  </form>
+  <center>
+  <button class="bt" style="border-radius: 10px;" onclick="location.href='log.html'"> Aleredy have an account ? clike here</button>
+
+
+  <button class="bt" style="border-radius: 10px;" onclick="location.href='reg.html'"> New to BlackRoad ? clike here</button>
+  
+  <button class="bt" style="border-radius: 10px;" onclick="location.href='blackread/index.html'"> BlackRoad File Reader </button>
+  
+  
+</center>
+
+  <script>
+
+
+// onchange="importData()"    https://forsomething2410.github.io/kannakku/blackdata/blackroad.txt
+    
+    
+
+    
+      document.getElementById('f').addEventListener('submit', e => {
+        e.preventDefault();
+        const ux = document.getElementById('u').value;
+        const px = document.getElementById('p').value;
+        const pi= document.getElementById('logpin').value;
+       impor(document.getElementById('urlinp').value,px);
+        
+        if(px===nkndata["p"]){
+          alert("login successfilll");
+          localStorage.setItem("blackuser", u);
+          localStorage.setItem("blogpin",pi);
+          location.href="finpulse.html";
+
+        }else{
+        alert("Click Once More / wrond user name and password");
+        }
+      
+    
+      });
+    
+    
+    
+    let nkndata = {};
+    
+    function importData() {
+    try {
+    const data = JSON.parse(alldata);
+   // alert(data);
+    
+    if (typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error();
+    }
+    
+    const dbName = 'blackviji';
+    const storeName = 'sst';
+    const dbReq = indexedDB.open(dbName, 2);
+    
+    dbReq.onupgradeneeded = (event) => {
+    const db = event.target.result;
+    if (!db.objectStoreNames.contains(storeName)) {
+    db.createObjectStore(storeName);
+    }
+    };
+    
+    dbReq.onsuccess = (event) => {
+    const db = event.target.result;
+    const tx = db.transaction(storeName, 'readwrite');
+    const os = tx.objectStore(storeName);
+    
+    for (const key in data) {
+    console.log("nkn chakli");
+    if (key === "user") {
+    nkndata = data[key];
+    }
+    os.put(data[key], key);
+    }
+    
+    tx.oncomplete = () => {
+  //  alert('Data Readed Succesfully successfully!');
+    db.close();
+    };
+    
+    tx.onerror = () => alert('Error during import.');
+    };
+    
+    dbReq.onerror = () => alert('Error opening database.');
+    } catch (err) {
+    alert('Invalid blackroad file ' + err);
+    }
+    }
+  
+    
+    function chkR(k, u) {
+    if (localStorage.getItem(k)) {
+        window.location.href = u;
+    }
+}
+
+//  chkR("blackuser","finpulse.html");  
+    
+    
+    function pccon(t, y) {
+    const key =document.getElementById('p').value;
+   // alert(key);
+    const chunkSize = 1000;
+    let result = '';
+    
+    if (y === 'e') {
+    for (let i = 0; i < t.length; i += chunkSize) {
+    const chunk = t.slice(i, i + chunkSize);
+    const encrypted = CryptoJS.AES.encrypt(chunk, key).toString();
+    result += encrypted + '|';
+    }
+    return result.slice(0, -1);
+    } else if (y === 'd') {
+    const chunks = t.split('|');
+    for (let i = 0; i < chunks.length; i++) {
+    const bytes = CryptoJS.AES.decrypt(chunks[i].trim(), key);
+    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+    if (!decrypted && decrypted !== '') throw new Error("Invalid chunk or wrong key");
+    result += decrypted;
+    }
+    return result;
+    } else {
+    throw new Error("x");
+    }
+    }
+    
+    let alldata="";
+   async function impor(u,pa){
+    let dat = await fetch(u);
+    let cv= await dat.text();
+    let nkn= await pccon(cv,"d");
+    alldata=nkn;
+    importData();
+    }
+    
+    
+    
+    
+    </script>
+    
+
+</body>
+</html>
