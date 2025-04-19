@@ -126,7 +126,7 @@ function delDB() {
      const deleteRequest = indexedDB.deleteDatabase("blackviji");
      alert("Factory Reset Successful!");
       localStorage.removeItem("blackuser");
-      localStorage.removeItem("blogpin");
+      localStorage.removeItem("blogpinv");
      location.href = "login.html";
     deleteRequest.onsuccess = function () {
      
